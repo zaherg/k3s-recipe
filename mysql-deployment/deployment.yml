@@ -1,38 +1,48 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redis-server
-  namespace: redis-server
+  name: mysql-server
+  namespace: mysql-server
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: redis-server
+      app: mysql-server
   template:
     metadata:
       labels:
-        app: redis-server
-        name: redis-server
+        app: mysql-server
+        name: mysql-server
     spec:
       # nodeSelector:
       #   node-type: worker
       #   kubernetes.io/arch: arm64
       containers:
-      - name: redis-server
-        image: ubuntu/redis:latest
+      - name: mysql-server
+        image: ubuntu/mysql:edge
         imagePullPolicy: "IfNotPresent"
-        args: ["--appendonly", "yes"]
         ports:
-          - name: redis-server
-            containerPort: 6379
+          - name: mysql-server
+            containerPort: 3306
         volumeMounts:
-          - name: lv-storage
-            mountPath: /data
+          - name: mysql-config-volume
+            mountPath: /etc/mysql/mysql.conf.d/my-custom.cnf
+            subPath: my-custom.cnf        
+          - name: mysql-storage
+            mountPath: /var/lib/mysql
         env:
-            - name: ALLOW_EMPTY_PASSWORD
-              value: "yes"
+          - name: MYSQL_ROOT_PASSWORD
+            value: "secret"
+          - name: MYSQL_INITSB_SKIP_TZINFO
+            value: "yes"
       volumes:
-        - name: lv-storage
+        - name: mysql-config-volume
+          configMap:
+            name: mysql-config
+            items:
+            - key: main-config
+              path: my-custom.cnf      
+        - name: mysql-storage
           persistentVolumeClaim:
-            claimName: redis-pvc
+            claimName: mysql-pvc
 
