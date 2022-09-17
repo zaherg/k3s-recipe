@@ -21,19 +21,7 @@ kubectl create configmap postgres-config --from-file=main-config=postgresql.conf
 4. Create Deployment
 
 ```shell
-kubectl apply -f deployment.yml
-```
-
-You can check for the deployment process by checking the pods
-
-```shell
-kubectl get pods -n postgres-server
-```
-
-5. Create Service
-
-```shell
-kubectl apply -f service.yml
+kubectl apply -f .
 ```
 
 You can check if everything is okay by running

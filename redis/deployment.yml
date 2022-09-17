@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+
+  name: redis
+
+  namespace: redis-server
+
+spec:
+
+  replicas: 1
+
+  selector:
+
+    matchLabels:
+      app: redis
+
+  template:
+
+    metadata:
+
+      labels:
+        app: redis
+        name: redis
+
+    spec:
+  
+      nodeSelector:
+        kubernetes.io/hostname: worker-1
+        
+      containers:
+
+        - name: redis
+          image: redis:latest
+          imagePullPolicy: Always
+          args: ["--appendonly", "yes"]
+          ports:
+            - name: redis
+              containerPort: 6379
+          volumeMounts:
+            - name: redis-storage
+              mountPath: /data
+          env:
+              - name: ALLOW_EMPTY_PASSWORD
+                value: "yes"
+
+      volumes:
+
+        - name: redis-storage
+          persistentVolumeClaim:
+            claimName: redis-pvc
+

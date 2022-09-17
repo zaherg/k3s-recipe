@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+
+  name: meilisearch
+
+  namespace: meilisearch-server
+
+spec:
+
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: meilisearch
+
+  template:
+
+    metadata:
+
+      labels:
+        app: meilisearch
+        name: meilisearch
+
+    spec:
+  
+      nodeSelector:
+        kubernetes.io/hostname: worker-2
+    
+      containers:
+        
+        - name: meilisearch
+          image: getmeili/meilisearch:v0.29
+          imagePullPolicy: Always
+          ports:
+            - name: meilisearch
+              containerPort: 7700
+          volumeMounts:     
+            - name: meilisearch-storage
+              mountPath: /meili_data
+          env:
+            - name: MEILI_MASTER_KEY
+              value: "MASTER_KEY"
+            - name: MEILI_NO_ANALYTICS
+      
+      volumes: 
+      
+        - name: meilisearch-storage
+          persistentVolumeClaim:
+            claimName: meilisearch-pvc
+

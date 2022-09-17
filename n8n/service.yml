@@ -1,0 +1,23 @@
+apiVersion: v1
+
+kind: Service
+
+metadata:
+
+  name: n8n
+
+  namespace: n8n-server
+
+spec:
+  
+  selector:
+    app: n8n
+  
+  type: LoadBalancer
+  
+  ports:
+
+    - name: n8n-port
+      protocol: TCP
+      port: 5678
+

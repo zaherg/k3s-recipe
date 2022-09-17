@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+
+  name: cloudflare
+
+  namespace: cloudflare-server
+
+spec:
+
+  replicas: 1
+
+  selector:
+
+    matchLabels:
+      app: cloudflare
+
+  template:
+
+    metadata:
+
+      labels:
+        app: cloudflare
+        name: cloudflare
+
+    spec:
+  
+      nodeSelector:
+        kubernetes.io/hostname: master
+        
+      containers:
+
+        - name: cloudflare
+          image: cloudflare/cloudflared:latest
+          imagePullPolicy: Always
+          args:
+            - "tunnel"
+            - "--no-autoupdate"
+            - "run"
+            - "--token"
+            - <ADD_YOUR_TOKEN_HERE>

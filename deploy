@@ -1,0 +1,49 @@
+#!/usr/bin/env sh
+
+echo "Deploying cloudflare Tunnel"
+kubectl apply -f cloudflared/namespace.yml
+kubectl apply -f cloudflared/.
+echo "\n"
+
+echo "Deploying postgres"
+kubectl apply -f postgres/namespace.yml
+kubectl create configmap postgres-config --from-file=main-config=postgres/postgresql.conf -n postgres-server
+kubectl apply -f postgres/pvc.yml
+kubectl apply -f postgres/.
+echo "\n"
+
+echo "Deploying mysql"
+kubectl apply -f mysql/namespace.yml
+kubectl create configmap mysql-config --from-file=main-config=mysql/my-custom.cnf -n mysql-server
+kubectl apply -f mysql/pvc.yml
+kubectl apply -f mysql/.
+echo "\n"
+
+echo "Deploying redis"
+kubectl apply -f redis/namespace.yml
+kubectl apply -f redis/pvc.yml
+kubectl apply -f redis/.
+echo "\n"
+
+echo "Deploying meilisearch"
+kubectl apply -f meilisearch/namespace.yml
+kubectl apply -f meilisearch/pvc.yml
+kubectl apply -f meilisearch/.
+echo "\n"
+
+echo "Deploying n8n"
+kubectl apply -f n8n/namespace.yml
+kubectl apply -f n8n/pvc.yml
+kubectl apply -f n8n/.
+echo "\n"
+
+echo "Deploying rethinkdb"
+kubectl apply -f rethinkdb/namespace.yml
+kubectl apply -f rethinkdb/pvc.yml
+kubectl apply -f rethinkdb/.
+echo "\n"
+
+echo "Deploying fider"
+kubectl apply -f fider/namespace.yml
+kubectl apply -f fider/.
+echo "\n"

@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+
+  name: n8n
+
+  namespace: n8n-server
+
+spec:
+  
+  replicas: 1
+  
+  selector:
+
+    matchLabels:
+      app: n8n
+
+  template:
+
+    metadata:
+
+      labels:
+        app: n8n
+        name: n8n
+  
+    spec:
+  
+      nodeSelector:
+        kubernetes.io/hostname: worker-2
+
+      containers:
+  
+      - name: n8n
+        image: n8nio/n8n:latest
+        imagePullPolicy: Always
+        ports:
+          - name: n8n
+            containerPort: 5678
+        env:
+          - name: NODE_ENV
+            value: production
+          - name: GENERIC_TIMEZONE
+            value: Europe/Istanbul
+          - name: WEBHOOK_TUNNEL_URL
+            value: https://n8n.cluster.local:5678/
+          - name: DB_TYPE
+            value: postgresdb
+          - name: DB_POSTGRESDB_USER
+            value: postgres
+          - name: DB_POSTGRESDB_PASSWORD
+            value: secret
+          - name: DB_POSTGRESDB_DATABASE
+            value: "n8n"
+          - name: DB_POSTGRESDB_HOST
+            value: postgres.postgres-server
+          - name: DB_POSTGRESDB_PORT
+            value: "5432"
+          - name: N8N_ENCRYPTION_KEY
+            value: "n8n"
+          # - name: N8N_BASIC_AUTH_ACTIVE
+          #   value: "true"
+          # - name: N8N_BASIC_AUTH_PASSWORD
+          #   value: admin
+          # - name: N8N_BASIC_AUTH_USER
+          #   value: admin
+          - name: N8N_PROTOCOL
+            value: https
+          - name: N8N_HOST
+            value: n8n.cluster.local
+          - name: N8N_PORT
+            value: "5678"
+        resources:
+          limits:
+            cpu: "1.0"
+            memory: "1024Mi"
+          requests:
+            cpu: "0.5"
+            memory: "512Mi"
+        volumeMounts:
+          - name: n8n-storage
+            mountPath: /root/.n8n
+          - name: n8n-storage
+            mountPath: /opt/workflows
+      
+      volumes:
+
+        - name: n8n-storage
+          persistentVolumeClaim:
+            claimName: n8n-pvc          

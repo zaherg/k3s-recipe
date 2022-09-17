@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+
+kind: Ingress
+
+metadata:
+  name: rethink-ingress
+  namespace: rethinkdb-server
+
+spec:
+
+  rules:
+  - host: rethink.cluster.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: rethink
+            port:
+              number: 8080

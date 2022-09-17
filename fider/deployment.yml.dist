@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+
+  name: fider
+
+  namespace: fider-server
+
+spec:
+  
+  replicas: 1
+  
+  selector:
+
+    matchLabels:
+      app: fider
+
+  template:
+
+    metadata:
+
+      labels:
+        app: fider
+        name: fider
+  
+    spec:
+  
+      nodeSelector:
+        kubernetes.io/hostname: worker-1
+
+      containers:
+  
+      - name: fider
+        image: getfider/fider:stable
+        imagePullPolicy: Always
+        ports:
+          - name: nfider8n
+            containerPort: 3000
+        env:
+          # Public Host Name
+          - name: BASE_URL
+            value: https://feedback.yoursite.com
+
+          - name: DATABASE_URL
+            value: postgres://fider:s0m3g00dp4ssw0rd@db:5432/fider?sslmode=disable
+          
+          # Generate a 512-bit secret here https://www.allkeysgenerator.com/Random/Security-Encryption-Key-Generator.aspx
+          - name: JWT_SECRET
+            value: VERY_STRONG_SECRET_SHOULD_BE_USED_HERE
+
+          - name: EMAIL_NOREPLY
+            value: noreply@yourdomain.com
+            
+          ###
+          # EMAIL
+          # Either EMAIL_MAILGUN_* or EMAIL_SMTP_* or EMAIL_AWSSES_* is required
+          ###
+
+          # - name: EMAIL_MAILGUN_API
+          #   value: key-yourkeygoeshere
+          # - name: EMAIL_MAILGUN_DOMAIN
+          #   value: yourdomain.com
+          # - name: EMAIL_MAILGUN_REGION
+          #   value: US
+
+          # - name: EMAIL_SMTP_HOST
+          #   value: smtp.yourdomain.com
+          # - name: EMAIL_SMTP_PORT
+          #   value: 587
+          # - name: EMAIL_SMTP_USERNAME
+          #   value: user@yourdomain.com
+          # - name: EMAIL_SMTP_PASSWORD
+          #   value: s0m3p4ssw0rd
+          # - name: EMAIL_SMTP_ENABLE_STARTTLS
+          #   value: "true"           
+
+          # - name: EMAIL_AWSSES_REGION
+          #   value: us-east-1
+          # - name: EMAIL_AWSSES_ACCESS_KEY_ID
+          #   value: youraccesskeygoeshere
+          # - name: EMAIL_AWSSES_SECRET_ACCESS_KEY
+          #   value: yoursecretkeygoeshere
+    
+        resources:
+          limits:
+            cpu: "1.0"
+            memory: "1024Mi"
+          requests:
+            cpu: "0.5"
+            memory: "512Mi"

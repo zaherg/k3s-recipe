@@ -1,0 +1,115 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+
+  name: mastodon
+
+  namespace: mastodon-server
+
+spec:
+  
+  replicas: 1
+  
+  selector:
+
+    matchLabels:
+      app: mastodon
+
+  template:
+
+    metadata:
+
+      labels:
+        app: mastodon
+        name: mastodon
+  
+    spec:
+  
+      # nodeSelector:
+      #   kubernetes.io/hostname: master
+
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app: mastodon
+
+      containers:
+  
+      - name: mastodon
+        image: lscr.io/linuxserver/mastodon:latest
+        imagePullPolicy: Always
+        ports:
+        ports:
+          - name: plain
+            containerPort: 80
+          - name: secure
+            containerPort: 443 
+        env:
+          - name: PUID
+            value: 1000
+          - name: GUID
+            value: 1000
+          - name: TZ
+            value: Europe/Istanbul
+          # Only set if local/web is different
+          # - name: LOCAL_DOMAIN
+          #   value: mastodon.cluster.local
+          - name: WEB_DOMAIN
+            value: mastodon.cluster.local
+          - name: REDIS_HOST
+            value: redis.redis-servver
+          - name: REDIS_PORT
+            value: 6379
+          - name: DB_NAME
+            value: mastodon
+          - name: DB_HOST
+            value: postgres.postgres-server
+          - name: DB_USER
+            value: postgres
+          - name: DB_PASS
+            value: <YOUR_PASSWORD>
+          - name: DB_PORT
+            value: 5432
+          - name: ES_ENABLED
+            value: "false"
+          - name: SECRET_KEY_BASE
+            value:
+          - name: OTP_SECRET
+            value:
+          - name: VAPID_PRIVATE_KEY
+            value:
+          - name: VAPID_PUBLIC_KEY
+            value:
+          - name: SMTP_SERVER
+            value:
+          - name: SMTP_PORT
+            value:
+          - name: SMTP_LOGIN
+            value:
+          - name: SMTP_PASSWORD
+            value:
+          - name: SMTP_FROM_ADDRESS
+            value:
+          - name: S3_ENABLED
+            value: "false"
+        resources:
+          limits:
+            cpu: "1.0"
+            memory: "1024Mi"
+          requests:
+            cpu: "0.5"
+            memory: "1024Mi"
+        # volumeMounts:
+        #   - name: mastodon-storage
+        #     mountPath: /config
+      
+      # volumes:
+
+      #   - name: mastodon-storage
+      #     persistentVolumeClaim:
+      #       claimName: mastodon-pvc

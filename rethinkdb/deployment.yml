@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+
+  name: rethinkdb
+
+  namespace: rethinkdb-server
+
+spec:
+
+  replicas: 1
+
+  selector:
+
+    matchLabels:
+      app: rethinkdb
+
+  template:
+
+    metadata:
+
+      labels:
+        app: rethinkdb
+        name: rethinkdb
+
+    spec:
+  
+      nodeSelector:
+        kubernetes.io/hostname: worker-2
+        
+      containers:
+
+        - name: rethinkdb
+          image: rethinkdb:2.4.2
+          imagePullPolicy: Always
+          ports:
+            - name: rethinkdb
+              containerPort: 28015
+            - name: rethink-admin
+              containerPort: 8080
+          volumeMounts:
+            - name: rethinkdb-storage
+              mountPath: /data
+
+      volumes:
+
+        - name: rethinkdb-storage
+          persistentVolumeClaim:
+            claimName: rethinkdb-pvc
+

@@ -32,7 +32,7 @@ jobs:
       max-parallel: 15
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 1
 
@@ -86,7 +86,7 @@ jobs:
         with:
           platforms: linux/amd64,linux/arm64/v8,linux/ppc64le,linux/s390x
           builder: ${{ steps.buildx.outputs.name }}
-          file: postgres-deployment/docker/Dockerfile
+          file: postgres/docker/Dockerfile
           pull: true        
           push: ${{ github.event_name != 'pull_request' }}   
           tags: ${{ steps.prep.outputs.tags }}

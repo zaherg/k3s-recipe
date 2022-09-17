@@ -1,0 +1,23 @@
+apiVersion: v1
+
+kind: Service
+
+metadata:
+  name: mastodon
+  namespace: mastodon-server
+
+spec:
+  selector:
+    app: mastodon
+
+  # type: LoadBalancer
+
+  ports:
+    
+    - name: mastodon-plain
+      protocol: TCP
+      port: 80
+    
+    - name: mastodon-secure
+      protocol: TCP
+      port: 443            

@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+
+  name: mysql
+
+  namespace: mysql-server
+
+spec:
+
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: mysql
+
+  template:
+
+    metadata:
+
+      labels:
+        app: mysql
+        name: mysql
+
+    spec:
+  
+      nodeSelector:
+        kubernetes.io/hostname: worker-1
+            
+      containers:
+        
+        - name: mysql
+          image: ubuntu/mysql:edge
+          imagePullPolicy: Always
+          ports:
+            - name: mysql
+              containerPort: 3306
+          volumeMounts:
+            - name: mysql-config-volume
+              mountPath: /etc/mysql/mysql.conf.d/my-custom.cnf
+              subPath: my-custom.cnf        
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "secret"
+            - name: MYSQL_INITSB_SKIP_TZINFO
+              value: "yes"
+      
+      volumes:
+      
+        - name: mysql-config-volume
+          configMap:
+            name: mysql-config
+            items:
+            - key: main-config
+              path: my-custom.cnf      
+      
+        - name: mysql-storage
+          persistentVolumeClaim:
+            claimName: mysql-pvc
+

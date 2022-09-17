@@ -21,19 +21,7 @@ kubectl create configmap mysql-config --from-file=main-config=my-custom.cnf -n m
 4. Create Deployment
 
 ```shell
-kubectl apply -f deployment.yml
-```
-
-You can check for the deployment process by checking the pods
-
-```shell
-kubectl get pods -n mysql-server
-```
-
-5. Create Service
-
-```shell
-kubectl apply -f service.yml
+kubectl apply -f .
 ```
 
 You can check if everything is okay by running

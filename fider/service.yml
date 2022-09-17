@@ -1,0 +1,22 @@
+apiVersion: v1
+
+kind: Service
+
+metadata:
+
+  name: fider
+
+  namespace: fider-server
+
+spec:
+  
+  selector:
+    app: fider
+  
+  type: LoadBalancer
+  
+  ports:
+
+    - name: fider-port
+      protocol: TCP
+      port: 3000
