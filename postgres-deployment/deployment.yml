@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-server
+  namespace: postgres-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-server
+  template:
+    metadata:
+      labels:
+        app: postgres-server
+        name: postgres-server
+    spec:
+      nodeSelector:
+        kubernetes.io/arch: arm64
+      containers:
+      - name: postgres-server
+        image: ghcr.io/zaherg/postgres:latest
+        imagePullPolicy: "IfNotPresent"
+        ports:
+          - name: postgres-server
+            containerPort: 5432
+        volumeMounts:
+          - name: postgres-storage
+            mountPath: /var/lib/postgresql/data
+          - name: postgres-config-volume
+            mountPath: /etc/postgresql/postgresql.conf
+            subPath: postgresql.conf            
+        env:
+            - name: POSTGRES_PASSWORD
+              value: "secret"
+            - name: POSTGRES_USER
+              value: "postgres"
+            - name: POSTGRES_HOST_AUTH_METHOD
+              value: "trust"
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: postgres-pvc
+        - name: postgres-config-volume
+          configMap:
+            name: postgres-config
+            items:
+            - key: main-config
+              path: postgresql.conf            
+
