@@ -19,7 +19,7 @@ env:
 jobs:
   
   github:
-    name: Build & Push [ghcr]
+    name: Build & Push [postgres]
 
     runs-on: ubuntu-latest
 
@@ -94,7 +94,7 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
 
   pg_backup:
-    name: Build & Push [ghcr]
+    name: Build & Push [postgres backup]
 
     runs-on: ubuntu-latest
 
@@ -159,6 +159,7 @@ jobs:
       - name: Build for multi-platform
         uses: docker/build-push-action@v3
         with:
+          context: postgres-backup/docker
           platforms: linux/amd64,linux/arm64/v8,linux/ppc64le,linux/s390x
           builder: ${{ steps.buildx.outputs.name }}
           file: postgres-backup/docker/Dockerfile
