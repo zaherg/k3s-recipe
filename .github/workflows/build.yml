@@ -90,8 +90,8 @@ jobs:
           pull: true        
           push: ${{ github.event_name != 'pull_request' }}   
           tags: ${{ steps.prep.outputs.tags }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
+          cache-from: type=gh,src=.
+          cache-to: type=gh,dest=.
 
   pg_backup:
     name: Build & Push [postgres backup]
@@ -166,5 +166,5 @@ jobs:
           pull: true        
           push: ${{ github.event_name != 'pull_request' }}   
           tags: ${{ steps.prep.outputs.tags }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
+          cache-from: type=gh,src=.
+          cache-to: type=gh,dest=.
