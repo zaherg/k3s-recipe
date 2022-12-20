@@ -9,6 +9,10 @@ metadata:
 spec:
   
   schedule: "0 */12 * * *"
+
+  successfulJobsHistoryLimit: 1
+  
+  failedJobsHistoryLimit: 1  
   
   jobTemplate:
   
