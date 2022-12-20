@@ -84,7 +84,7 @@ jobs:
       - name: Build for multi-platform
         uses: docker/build-push-action@v3
         with:
-          platforms: linux/amd64,linux/arm64/v8,linux/ppc64le,linux/s390x
+          platforms: linux/amd64,linux/arm64/v8
           builder: ${{ steps.buildx.outputs.name }}
           file: postgres/docker/Dockerfile
           pull: true        
@@ -160,11 +160,11 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: postgres-backup/docker
-          platforms: linux/amd64,linux/arm64/v8,linux/ppc64le,linux/s390x
+          platforms: linux/amd64,linux/arm64/v8
           builder: ${{ steps.buildx.outputs.name }}
           file: postgres-backup/docker/Dockerfile
           pull: true        
           push: ${{ github.event_name != 'pull_request' }}   
           tags: ${{ steps.prep.outputs.tags }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache     
+          cache-from: type=registry,ref=zaherg/postgres_backup:buildcache
+          cache-to: type=registry,ref=zaherg/postgres_backup:buildcache,mode=max
