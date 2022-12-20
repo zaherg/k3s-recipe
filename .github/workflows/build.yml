@@ -166,5 +166,5 @@ jobs:
           pull: true        
           push: ${{ github.event_name != 'pull_request' }}   
           tags: ${{ steps.prep.outputs.tags }}
-          cache-from: type=registry,ref=zaherg/postgres_backup:buildcache
+          cache-from: type=registry,ref=zaherg/postgres_backup:latest
           cache-to: type=registry,ref=zaherg/postgres_backup:buildcache,mode=max
