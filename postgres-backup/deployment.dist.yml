@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresql
+  namespace: pg-backup
+spec:
+  selector:
+    matchLabels:
+      app: postgresql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: postgresql
+    spec:
+      containers:
+      - name: postgresql
+          image: ghcr.io/zaherg/postgres_backup:latest
+          imagePullPolicy: Always
+        env:
+        - name: POSTGRES_DATABASE
+          value: ""
+        - name: POSTGRES_HOST
+          value: ""
+        - name: POSTGRES_PORT
+          value: ""
+        - name: POSTGRES_PASSWORD
+          value: ""
+        - name: POSTGRES_USER
+          value: ""
+        - name: S3_ACCESS_KEY_ID
+          value: ""
+        - name: S3_SECRET_ACCESS_KEY
+          value: ""
+        - name: S3_BUCKET
+          value: ""
+        - name: S3_ENDPOINT
+          value: ""
+        - name: S3_PREFIX
+          value: ""
+        - name: SCHEDULE
+          value: ""
